@@ -10,7 +10,7 @@ const FinalCTA = () => {
     return (
         <section className="py-8 px-4">
             <div className="max-w-md mx-auto text-center space-y-4">
-                <p className="text-foreground font-bold text-lg">
+                <p className="text-foreground font-bold text-2xl">
                     Ready to start saving?
                 </p>
                 <p className="text-muted-foreground text-sm">

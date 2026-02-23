@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Phone, MessageCircle, Shield, Copy } from "lucide-react";
+import { Phone, MessageCircle, Shield } from "lucide-react";
 
 type Message = {
   id: number;
@@ -152,9 +152,7 @@ const ChatWidget = () => {
     }
   };
 
-  const handleCopyNumber = () => {
-    navigator.clipboard.writeText("9412496799");
-  };
+
 
   return (
     <section id="quote-chat" className="pb-4 px-4 scroll-mt-20">
@@ -199,13 +197,6 @@ const ChatWidget = () => {
                     <Phone className="w-5 h-5" />
                     Call (941) 249-6799
                   </a>
-                  <button
-                    onClick={handleCopyNumber}
-                    className="w-full inline-flex items-center justify-center gap-1 text-muted-foreground hover:text-foreground text-xs transition-colors py-1"
-                  >
-                    <Copy className="w-3 h-3" />
-                    Copy number (for desktop)
-                  </button>
                   <div className="text-xs text-primary font-semibold px-2">
                     We currently have 3 agents available. We are available from 9:00AM to 5PM EST
                   </div>

@@ -1,23 +1,14 @@
-import { Phone, Shield, Copy } from "lucide-react";
-import { useState } from "react";
+import { Phone, Shield } from "lucide-react";
 
 const HeroSection = () => {
-  const [copied, setCopied] = useState(false);
-
   const handleCallClick = () => {
     if (typeof window !== "undefined" && typeof (window as any).fbq === "function") {
       (window as any).fbq("track", "Contact", { content_name: "Hero Call Button" });
     }
   };
 
-  const handleCopyNumber = () => {
-    navigator.clipboard.writeText("9412496799");
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
-    <section className="relative bg-background pt-2 pb-0 px-4 text-center overflow-hidden">
+    <section className="relative bg-background pt-2 pb-4 px-4 text-center overflow-hidden">
       {/* Background overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-card/80 to-background" />
 
@@ -50,14 +41,6 @@ const HeroSection = () => {
             <Phone className="w-6 h-6" />
             (941) 249-6799
           </a>
-          <button
-            onClick={handleCopyNumber}
-            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground text-xs transition-colors"
-            title="Copy phone number"
-          >
-            <Copy className="w-3 h-3" />
-            {copied ? "Copied!" : "Copy Number"}
-          </button>
         </div>
 
         <div className="mt-2 flex items-center justify-center gap-2 text-muted-foreground text-xs">
