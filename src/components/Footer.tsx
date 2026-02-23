@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="bg-card border-t border-border py-10 px-4">
       <div className="max-w-3xl mx-auto text-center space-y-6">
         <p className="text-muted-foreground text-xs leading-relaxed">
-          <strong>ADVERTORIAL DISCLAIMER:</strong>This website is an advertisement and not a news article or consumer protection update. The information provided is for general informational purposes only, and results may vary.
+          <strong className="cursor-default select-none">ADVERTORIAL DISCLAIMER:</strong>This website is an advertisement and not a news article or consumer protection update. The information provided is for general informational purposes only, and results may vary.
 
           Anchor Line Insurance is an independent insurance referral service and does not provide insurance directly. We connect consumers with licensed insurance agents who may offer quotes from multiple insurance carriers. Coverage availability and rates vary by state and individual circumstances.</p>
 

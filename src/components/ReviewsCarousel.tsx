@@ -10,7 +10,7 @@ const reviews = [
 ];
 
 const ReviewCard = ({ name, text }: { name: string; text: string }) => (
-  <div className="flex-shrink-0 w-80 bg-card border border-border rounded-xl p-6 mx-3">
+  <div className="flex-shrink-0 w-80 bg-card border border-border rounded-xl p-6 mx-3 cursor-default select-none">
     <div className="flex gap-1 mb-3">
       {[...Array(5)].map((_, i) => (
         <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -31,7 +31,7 @@ const ReviewCard = ({ name, text }: { name: string; text: string }) => (
 const ReviewsCarousel = () => {
   return (
     <section className="py-12 overflow-hidden">
-      <h2 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-8">
+      <h2 className="text-2xl md:text-3xl font-bold text-center text-foreground mb-8 cursor-default select-none">
         What Our Clients Say
       </h2>
       <div className="flex animate-scroll-left w-max">

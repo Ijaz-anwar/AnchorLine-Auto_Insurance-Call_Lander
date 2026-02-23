@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Phone, MessageCircle } from "lucide-react";
+import { Phone, MessageCircle, Shield } from "lucide-react";
 
 type Message = {
   id: number;
@@ -11,18 +11,44 @@ type Message = {
 const AGENT_AVATAR = "/assets/agent (1).gif";
 
 const ChatWidget = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const saved = localStorage.getItem("chat_messages");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [typing, setTyping] = useState(false);
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState<number>(() => {
+    const saved = localStorage.getItem("chat_step");
+    return saved ? parseInt(saved, 10) : 0;
+  });
 
-  const [closed, setClosed] = useState(false);
+  const [closed, setClosed] = useState<boolean>(() => {
+    const saved = localStorage.getItem("chat_closed");
+    return saved === "true";
+  });
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+  const resetChat = useCallback(() => {
+    localStorage.removeItem("chat_messages");
+    localStorage.removeItem("chat_step");
+    localStorage.removeItem("chat_closed");
+    setMessages([]);
+    setStep(0);
+    setClosed(false);
+  }, []);
+
+  // Persistence
+  useEffect(() => {
+    localStorage.setItem("chat_messages", JSON.stringify(messages));
+    localStorage.setItem("chat_step", step.toString());
+    localStorage.setItem("chat_closed", closed.toString());
+  }, [messages, step, closed]);
 
   useEffect(() => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
     }
   }, [messages, typing]);
+
   const addBotMessage = useCallback((text: string, buttons?: Message["buttons"]) => {
     setTyping(true);
     setTimeout(() => {
@@ -34,9 +60,9 @@ const ChatWidget = () => {
     }, 1200);
   }, []);
 
-  // Initial flow
+  // Initial flow - only if no messages exist
   useEffect(() => {
-    if (step === 0) {
+    if (step === 0 && messages.length === 0) {
       addBotMessage("Hi! I'm Emily, your personal car insurance assistant. Let's see what you qualify for");
       setTimeout(() => {
         addBotMessage(
@@ -46,9 +72,7 @@ const ChatWidget = () => {
         setStep(1);
       }, 2000);
     }
-  }, [step, addBotMessage]);
-
-
+  }, [step, addBotMessage, messages.length]);
 
   const handleButton = (value: string) => {
     if (closed && value !== "no") return;
@@ -126,10 +150,8 @@ const ChatWidget = () => {
     }
   };
 
-
-
   return (
-    <section className="pb-4 px-4">
+    <section id="quote-chat" className="pb-4 px-4 scroll-mt-20">
       <div className="max-w-md mx-auto bg-card rounded-2xl shadow-2xl border border-border overflow-hidden">
         {/* Header */}
         <div className="bg-primary px-4 py-3 flex items-center justify-between">
@@ -143,9 +165,17 @@ const ChatWidget = () => {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-1 text-primary-foreground/80 text-xs">
-            <MessageCircle className="w-3 h-3" />
-            <span>Online</span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={resetChat}
+              className="text-primary-foreground/60 hover:text-primary-foreground text-[10px] border border-primary-foreground/20 px-2 py-0.5 rounded transition-colors"
+            >
+              Reset
+            </button>
+            <div className="flex items-center gap-1 text-primary-foreground/80 text-xs">
+              <MessageCircle className="w-3 h-3" />
+              <span>Online</span>
+            </div>
           </div>
         </div>
 
@@ -154,24 +184,23 @@ const ChatWidget = () => {
           {messages.map((msg) => {
             if (msg.text === "CALL_CTA") {
               return (
-                <div key={msg.id} className="flex flex-col items-start gap-3">
+                <div key={msg.id} className="flex flex-col items-start gap-3 w-full">
                   <a
                     href="tel:+19412496799"
-                    className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-6 py-3 rounded-full transition-all hover:scale-105 animate-pulse-scale"
+                    className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-6 py-3 rounded-full transition-all hover:scale-[1.02] animate-pulse-scale"
                   >
                     <Phone className="w-5 h-5" />
                     Call (941) 249-6799
                   </a>
-                  <div className="text-xs text-primary font-semibold">
+                  <div className="text-xs text-primary font-semibold px-2">
                     We currently have 3 agents available. We are available from 9:00AM to 5PM EST
                   </div>
-
                 </div>
               );
             }
 
             return (
-              <div key={msg.id}>
+              <div key={msg.id} className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div
                   className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"} gap-2`}
                 >
@@ -204,8 +233,9 @@ const ChatWidget = () => {
             );
           })}
 
+
           {typing && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <img src={AGENT_AVATAR} alt="Emily" className="w-7 h-7 rounded-full" />
               <div className="bg-secondary px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1">
                 <span className="typing-dot" />
@@ -214,6 +244,22 @@ const ChatWidget = () => {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Trust Markers */}
+        <div className="px-4 py-3 bg-card border-t border-border flex flex-wrap items-center justify-center gap-4 text-muted-foreground/60 text-[10px] font-semibold uppercase tracking-wider">
+          <div className="flex items-center gap-1">
+            <Shield className="w-3 h-3" />
+            <span>Secure & Private</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-primary">★ ★ ★ ★ ★</span>
+            <span>4.9/5 Rating</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+            <span>Real-time Rates</span>
+          </div>
         </div>
 
         {closed && (
