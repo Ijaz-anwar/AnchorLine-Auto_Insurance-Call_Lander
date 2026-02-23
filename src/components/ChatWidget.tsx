@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Phone, MessageCircle, Shield } from "lucide-react";
+import { Phone, MessageCircle, Shield, Copy } from "lucide-react";
 
 type Message = {
   id: number;
@@ -112,19 +112,15 @@ const ChatWidget = () => {
         { id: Date.now(), sender: "user", text: value === "under_100" ? "Under $100" : "Over $100" },
       ]);
 
-      // Step 1: "Awesome!"
+      // Step 1: Reassurance
       setTimeout(() => {
-        addBotMessage("I’ll help you review different car insurance choices so you can find coverage that fits your needs and budget");
+        addBotMessage("Great news! I'll connect you with a licensed agent to review options that fit your budget.");
       }, 500);
-      // Step 2: Coverage comparison
+      // Step 2: Call instructions
       setTimeout(() => {
-        addBotMessage("Just one quick step left 🚗 Connect with a licensed agent to review your potential savings in minutes.");
-      }, 3000);
-      // Step 3: Call instructions
-      setTimeout(() => {
-        addBotMessage("Awesome! You're almost done—just tap the number below to speak with a specialist.");
-      }, 5500);
-      // Step 4: Phone CTA + agent availability + timer
+        addBotMessage("Just one quick step \u2014 tap the number below to speak with a specialist. It only takes a few minutes!");
+      }, 2000);
+      // Step 3: Phone CTA
       setTimeout(() => {
         setMessages((prev) => [
           ...prev,
@@ -135,7 +131,7 @@ const ChatWidget = () => {
           },
         ]);
         setStep(3);
-      }, 8000);
+      }, 3500);
     } else if (value === "no") {
       setMessages((prev) => [
         ...prev,
@@ -148,6 +144,16 @@ const ChatWidget = () => {
         setTimeout(() => setClosed(true), 2000);
       }, 500);
     }
+  };
+
+  const handleCallClick = () => {
+    if (typeof window !== "undefined" && typeof (window as any).fbq === "function") {
+      (window as any).fbq("track", "Contact", { content_name: "Chat Call Button" });
+    }
+  };
+
+  const handleCopyNumber = () => {
+    navigator.clipboard.writeText("9412496799");
   };
 
   return (
@@ -187,11 +193,19 @@ const ChatWidget = () => {
                 <div key={msg.id} className="flex flex-col items-start gap-3 w-full">
                   <a
                     href="tel:+19412496799"
-                    className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-6 py-3 rounded-full transition-all hover:scale-[1.02] animate-pulse-scale"
+                    onClick={handleCallClick}
+                    className="w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-6 py-3 rounded-full transition-all hover:scale-[1.02] animate-ring-once"
                   >
                     <Phone className="w-5 h-5" />
                     Call (941) 249-6799
                   </a>
+                  <button
+                    onClick={handleCopyNumber}
+                    className="w-full inline-flex items-center justify-center gap-1 text-muted-foreground hover:text-foreground text-xs transition-colors py-1"
+                  >
+                    <Copy className="w-3 h-3" />
+                    Copy number (for desktop)
+                  </button>
                   <div className="text-xs text-primary font-semibold px-2">
                     We currently have 3 agents available. We are available from 9:00AM to 5PM EST
                   </div>
@@ -253,7 +267,7 @@ const ChatWidget = () => {
             <span>Secure & Private</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-primary">★ ★ ★ ★ ★</span>
+            <span className="text-primary">{"\u2605 \u2605 \u2605 \u2605 \u2605"}</span>
             <span>4.9/5 Rating</span>
           </div>
           <div className="flex items-center gap-1">

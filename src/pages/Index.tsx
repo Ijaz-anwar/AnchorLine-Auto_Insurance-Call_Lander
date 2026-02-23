@@ -1,6 +1,7 @@
 import HeroSection from "@/components/HeroSection";
 import ChatWidget from "@/components/ChatWidget";
 import ReviewsCarousel from "@/components/ReviewsCarousel";
+import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -9,6 +10,7 @@ const Index = () => {
       <HeroSection />
       <ChatWidget />
       <ReviewsCarousel />
+      <FinalCTA />
       <Footer />
     </div>
   );
