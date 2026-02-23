@@ -11,37 +11,19 @@ type Message = {
 const AGENT_AVATAR = "/assets/agent (1).gif";
 
 const ChatWidget = () => {
-  const [messages, setMessages] = useState<Message[]>(() => {
-    const saved = localStorage.getItem("chat_messages");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [messages, setMessages] = useState<Message[]>([]);
   const [typing, setTyping] = useState(false);
-  const [step, setStep] = useState<number>(() => {
-    const saved = localStorage.getItem("chat_step");
-    return saved ? parseInt(saved, 10) : 0;
-  });
-
-  const [closed, setClosed] = useState<boolean>(() => {
-    const saved = localStorage.getItem("chat_closed");
-    return saved === "true";
-  });
+  const [step, setStep] = useState<number>(0);
+  const [closed, setClosed] = useState<boolean>(false);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const resetChat = useCallback(() => {
-    localStorage.removeItem("chat_messages");
-    localStorage.removeItem("chat_step");
-    localStorage.removeItem("chat_closed");
     setMessages([]);
     setStep(0);
     setClosed(false);
   }, []);
 
-  // Persistence
-  useEffect(() => {
-    localStorage.setItem("chat_messages", JSON.stringify(messages));
-    localStorage.setItem("chat_step", step.toString());
-    localStorage.setItem("chat_closed", closed.toString());
-  }, [messages, step, closed]);
+
 
   useEffect(() => {
     if (messagesContainerRef.current) {
